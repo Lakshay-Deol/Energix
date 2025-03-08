@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energix - Decentralized Energy Trading</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #A5D6A7;
+            --secondary: #FFC107;
+            --text-dark: #333;
+            --text-light: #f5f5f5;
+            --bg-light: #f9f9f9;
+            --bg-dark: #2c3e50;
+            --error: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .navbar {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo i {
+            color: var(--primary);
+        }
+        
+        .account {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .account-address {
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .connect-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .connect-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .market-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .market-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .market-item:last-child {
+            border-bottom: none;
+        }
+        
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .seller-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+        }
+        
+        .buy-btn {
+            background-color: var(--secondary);
+            color: var(--text-dark);
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.3s;
+        }
+        
+        .buy-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            color: var(--primary);
+        }
+        
+        .energy-form {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        input, select {
+            padding: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 0.5rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .transactions {
+            margin-top: 1rem;
+        }
+        
+        .transaction-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-hash {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .chart-container {
+            height: 250px;
+            margin-top: 1rem;
+        }
+        
+        .info-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .market-item {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+            
+            .market-item .seller-address {
+                display: none;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <span>⚡ Energix</span>
+        </div>
+        <div class="account">
+            <div class="account-address" id="account-address">Not connected</div>
+            <button class="connect-btn" id="connect-wallet">Connect Wallet</button>
+        </div>
+    </div>
+    
+    <main>
+        <h1>Decentralized Energy Trading Dashboard</h1>
+        <p class="info-text">Buy and sell renewable energy directly with other users on the blockchain.</p>
+        
+        <div class="dashboard">
+            <div class="left-column">
+                <div class="card">
+                    <div class="card-title">
+                        <span>Energy Market</span>
+                        <span>Available: 45.8 kWh</span>
+                    </div>
+                    <div class="market-list">
+                        <div class="market-item">
+                            <div class="seller-info">
+                                <div class="seller-icon">S</div>
+                                <div>
+                                    <div>Solar Producer</div>
+                                    <div class="seller-address">0x71C...A3F2</div>
+                                </div>
+                            </div>
+                            <div>10 kWh</div>
+                            <div>0.05 ETH</div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                        <div class="market-item">
+                            <div class="seller-info">
+                                <div class="seller-icon">W</div>
+                                <div>
+                                    <div>Wind Generator</div>
+                                    <div class="seller-address">0x82D...B4C1</div>
+                                </div>
+                            </div>
+                            <div>15 kWh</div>
+                            <div>0.07 ETH</div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                        <div class="market-item">
+                            <div class="seller-info">
+                                <div class="seller-icon">S</div>
+                                <div>
+                                    <div>Solar Farm East</div>
+                                    <div class="seller-address">0x93E...D2F6</div>
+                                </div>
+                            </div>
+                            <div>20.8 kWh</div>
+                            <div>0.09 ETH</div>
+                            <button class="buy-btn">Buy</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Price History</div>
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="card">
+                    <div class="card-title">Your Energy Stats</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div>Energy Produced</div>
+                            <div class="stat-value">25.4 kWh</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Energy Consumed</div>
+                            <div class="stat-value">18.7 kWh</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Available to Sell</div>
+                            <div class="stat-value">6.7 kWh</div>
+                        </div>
+                        <div class="stat-card">
+                            <div>Total Earnings</div>
+                            <div class="stat-value">0.12 ETH</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Sell Energy</div>
+                    <form class="energy-form">
+                        <div class="form-group">
+                            <label for="energy-amount">Amount (kWh)</label>
+                            <input type="number" id="energy-amount" min="0.1" step="0.1" max="6.7" placeholder="Enter amount">
+                        </div>
+                        <div class="form-group">
+                            <label for="energy-price">Price (ETH per kWh)</label>
+                            <input type="number" id="energy-price" min="0.001" step="0.001" placeholder="Enter price">
+                        </div>
+                        <div class="form-group">
+                            <label for="energy-source">Energy Source</label>
+                            <select id="energy-source">
+                                <option value="solar">Solar</option>
+                                <option value="wind">Wind</option>
+                                <option value="hydro">Hydro</option>
+                                <option value="biomass">Biomass</option>
+                            </select>
+                        </div>
+                        <button type="button" class="submit-btn" id="list-energy">List Energy for Sale</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">Recent Transactions</div>
+                    <div class="transactions">
+                        <div class="transaction-item">
+                            <div>Bought 5 kWh</div>
+                            <a href="#" class="transaction-hash">0x8d71...f356</a>
+                        </div>
+                        <div class="transaction-item">
+                            <div>Sold 3.4 kWh</div>
+                            <a href="#" class="transaction-hash">0x7c42...a192</a>
+                        </div>
+                        <div class="transaction-item">
+                            <div>Sold 2.1 kWh</div>
+                            <a href="#" class="transaction-hash">0x6f13...c248</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<script>
+// Smart Contract Details
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with actual contract address
+const CONTRACT_ABI = [ {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "listingId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "buyer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "energyAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "EnergyBought",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "listingId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "seller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "energyAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "EnergyListed",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "listingId",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyEnergy",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "energyListings",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "seller",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "energyAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "isActive",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getListings",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "energyAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "isActive",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct EnergyTrading.EnergyListing[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "energyAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "listEnergy",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "userBalances",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }];
+
+let provider, signer, energixContract;
+
+document.addEventListener("DOMContentLoaded", function () {
+    const connectWalletBtn = document.getElementById("connect-wallet");
+    const accountAddress = document.getElementById("account-address");
+
+    connectWalletBtn.addEventListener("click", async function () {
+        if (!window.ethereum) {
+            alert("Please install MetaMask!");
+            return;
+        }
+
+        try {
+            // Prevent multiple requests
+            connectWalletBtn.disabled = true;
+            connectWalletBtn.textContent = "Connecting...";
+
+            provider = new ethers.BrowserProvider(window.ethereum);
+            signer = await provider.getSigner();
+
+            // Check if accounts are already connected
+            const accounts = await provider.send("eth_accounts", []);
+            let userAccount;
+
+            if (accounts.length === 0) {
+                userAccount = (await provider.send("eth_requestAccounts", []))[0];
+            } else {
+                userAccount = accounts[0];
+            }
+
+            accountAddress.textContent = `${userAccount.substring(0, 6)}...${userAccount.slice(-4)}`;
+            connectWalletBtn.textContent = "Connected";
+            connectWalletBtn.disabled = false;
+
+            initializeContract();
+        } catch (error) {
+            console.error("Wallet connection error:", error);
+            alert(error.message || "Failed to connect wallet.");
+            connectWalletBtn.disabled = false;
+            connectWalletBtn.textContent = "Connect Wallet";
+        }
+    });
+
+    document.getElementById("list-energy").addEventListener("click", async () => {
+        const amount = document.getElementById("energy-amount").value;
+        const price = document.getElementById("energy-price").value;
+        const source = document.getElementById("energy-source").value;
+        if (!amount || !price) return alert("Enter valid values");
+        await listEnergyForSale(amount, price, source);
+    });
+});
+
+async function initializeContract() {
+    if (!window.ethereum) {
+        alert("MetaMask not detected! Please install MetaMask.");
+        return;
+    }
+    try {
+        energixContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+    } catch (error) {
+        console.error("Error initializing smart contract:", error);
+        alert("Failed to connect to contract.");
+    }
+}
+
+async function listEnergyForSale() {
+    const amount = document.getElementById("energy-amount").value;
+    const price = document.getElementById("energy-price").value;
+    const source = document.getElementById("energy-source").value;
+
+    if (!amount || !price) {
+        alert("Please enter a valid amount and price!");
+        return;
+    }
+
+    try {
+        // Call the smart contract function
+        const tx = await energixContract.listEnergy(
+            ethers.parseEther(amount),
+            ethers.parseEther(price)
+        );
+        await tx.wait();
+
+        console.log("✅ Energy listed on blockchain:", tx.hash);
+
+        // Send data to backend
+        const response = await fetch("http://localhost:5000/api/list-energy", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                seller: await signer.getAddress(),
+                energyAmount: amount,
+                price: price,
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("Energy listed successfully on blockchain and backend!");
+        } else {
+            alert(`Error: ${data.message}`);
+        }
+    } catch (error) {
+        console.error("❌ Error listing energy:", error);
+        alert("Failed to list energy.");
+    }
+}
+
+
+async function loadMarketData() {
+    try {
+        const response = await fetch("http://localhost:5000/api/energy-listings");
+        const listings = await response.json();
+
+        const marketList = document.querySelector(".market-list");
+        marketList.innerHTML = "";
+
+        listings.forEach((listing, index) => {
+            const item = document.createElement("div");
+            item.className = "market-item";
+            item.innerHTML = `
+                <div class="seller-info">
+                    <div class="seller-icon">S</div>
+                    <div>
+                        <div>${listing.seller}</div>
+                        <div class="seller-address">${listing.seller.substring(0, 6)}...${listing.seller.slice(-4)}</div>
+                    </div>
+                </div>
+                <div>${listing.energyAmount} kWh</div>
+                <div>${listing.price} ETH</div>
+                <button class="buy-btn" onclick="buyEnergy(${index}, '${listing.price}')">Buy</button>
+            `;
+            marketList.appendChild(item);
+        });
+    } catch (error) {
+        console.error("❌ Error loading market data:", error);
+    }
+}
+
+// Load market data on page load
+document.addEventListener("DOMContentLoaded", loadMarketData);
+
+
+
+async function buyEnergy(index, price) {
+    try {
+        // Call smart contract function to buy energy
+        const tx = await energixContract.buyEnergy(index, {
+            value: ethers.parseEther(price),
+        });
+        await tx.wait();
+
+        console.log("✅ Energy purchased:", tx.hash);
+
+        alert("Purchase successful!");
+        loadMarketData(); // Refresh the listings
+    } catch (error) {
+        console.error("❌ Error buying energy:", error);
+        alert("Transaction failed.");
+    }
+}
+
+</script>
+
+    
+    
+    
+    
+   
+</body>
+</html>
